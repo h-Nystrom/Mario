@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4265875858992402709}
   - component: {fileID: 5781912476732080102}
   - component: {fileID: 2480181968545017277}
+  - component: {fileID: 3152114890344769062}
   m_Layer: 8
   m_Name: Player
   m_TagString: Player
@@ -95,14 +96,14 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_Mass: 2
+  m_LinearDrag: 0.5
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &2480181968545017277
 CapsuleCollider2D:
@@ -120,3 +121,22 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 1, y: 2}
   m_Direction: 0
+--- !u!114 &3152114890344769062
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5814183234120005940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d42eb65ecd9d0a4994850cdbce87630, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 8
+  jumpPower: 60
+  jumpTime: 0
+  jumpMaxTime: 0.2
+  maxGravity: 5
+  onGround: 0
+  antiJitter: 5

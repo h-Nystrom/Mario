@@ -1,4 +1,4 @@
-// GENERATED AUTOMATICALLY FROM 'Assets/Scripts/PlayerInput.inputactions'
+// GENERATED AUTOMATICALLY FROM 'Assets/Scripts/PlayerInputSystem.inputactions'
 
 using System;
 using System.Collections;
@@ -6,13 +6,13 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public class @PlayerInput : IInputActionCollection, IDisposable
+public class @PlayerInputSystem : IInputActionCollection, IDisposable
 {
     public InputActionAsset asset { get; }
-    public @PlayerInput()
+    public @PlayerInputSystem()
     {
         asset = InputActionAsset.FromJson(@"{
-    ""name"": ""PlayerInput"",
+    ""name"": ""PlayerInputSystem"",
     ""maps"": [
         {
             ""name"": ""Input"",
@@ -23,6 +23,30 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""type"": ""Value"",
                     ""id"": ""d8250283-bfb1-4cdd-a212-f003f9d86767"",
                     ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed37c48c-535b-4199-8bfa-77179e7c5c0a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""ab8db689-90f7-4f41-8e53-60633bbea9ac"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Weapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""cea20e9e-6082-44ec-b2de-5bac2e68618c"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
                 }
@@ -137,6 +161,39 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4b2dcee8-8475-4cbe-a39a-3f11d363adcc"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8c5a5797-6e59-4b1f-bb9b-55a8ef7a4f8d"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4cb7ff2e-b210-4df6-b2ea-ddb5aa9cab43"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -146,6 +203,9 @@ public class @PlayerInput : IInputActionCollection, IDisposable
         // Input
         m_Input = asset.FindActionMap("Input", throwIfNotFound: true);
         m_Input_Movement = m_Input.FindAction("Movement", throwIfNotFound: true);
+        m_Input_Jump = m_Input.FindAction("Jump", throwIfNotFound: true);
+        m_Input_Run = m_Input.FindAction("Run", throwIfNotFound: true);
+        m_Input_Weapon = m_Input.FindAction("Weapon", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -196,11 +256,17 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     private readonly InputActionMap m_Input;
     private IInputActions m_InputActionsCallbackInterface;
     private readonly InputAction m_Input_Movement;
+    private readonly InputAction m_Input_Jump;
+    private readonly InputAction m_Input_Run;
+    private readonly InputAction m_Input_Weapon;
     public struct InputActions
     {
-        private @PlayerInput m_Wrapper;
-        public InputActions(@PlayerInput wrapper) { m_Wrapper = wrapper; }
+        private @PlayerInputSystem m_Wrapper;
+        public InputActions(@PlayerInputSystem wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Input_Movement;
+        public InputAction @Jump => m_Wrapper.m_Input_Jump;
+        public InputAction @Run => m_Wrapper.m_Input_Run;
+        public InputAction @Weapon => m_Wrapper.m_Input_Weapon;
         public InputActionMap Get() { return m_Wrapper.m_Input; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -213,6 +279,15 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Movement.started -= m_Wrapper.m_InputActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_InputActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_InputActionsCallbackInterface.OnMovement;
+                @Jump.started -= m_Wrapper.m_InputActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_InputActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_InputActionsCallbackInterface.OnJump;
+                @Run.started -= m_Wrapper.m_InputActionsCallbackInterface.OnRun;
+                @Run.performed -= m_Wrapper.m_InputActionsCallbackInterface.OnRun;
+                @Run.canceled -= m_Wrapper.m_InputActionsCallbackInterface.OnRun;
+                @Weapon.started -= m_Wrapper.m_InputActionsCallbackInterface.OnWeapon;
+                @Weapon.performed -= m_Wrapper.m_InputActionsCallbackInterface.OnWeapon;
+                @Weapon.canceled -= m_Wrapper.m_InputActionsCallbackInterface.OnWeapon;
             }
             m_Wrapper.m_InputActionsCallbackInterface = instance;
             if (instance != null)
@@ -220,6 +295,15 @@ public class @PlayerInput : IInputActionCollection, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
+                @Run.started += instance.OnRun;
+                @Run.performed += instance.OnRun;
+                @Run.canceled += instance.OnRun;
+                @Weapon.started += instance.OnWeapon;
+                @Weapon.performed += instance.OnWeapon;
+                @Weapon.canceled += instance.OnWeapon;
             }
         }
     }
@@ -227,5 +311,8 @@ public class @PlayerInput : IInputActionCollection, IDisposable
     public interface IInputActions
     {
         void OnMovement(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
+        void OnRun(InputAction.CallbackContext context);
+        void OnWeapon(InputAction.CallbackContext context);
     }
 }

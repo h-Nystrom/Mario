@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 6824242358909480341}
   - component: {fileID: 4724494598083284925}
   - component: {fileID: 6166134023454781318}
-  - component: {fileID: 6824242358909480328}
+  - component: {fileID: 5315787343505109114}
   m_Layer: 0
   m_Name: Ground
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!61 &6824242358909480328
+--- !u!61 &5315787343505109114
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
