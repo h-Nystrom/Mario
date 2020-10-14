@@ -1,15 +1,16 @@
 ﻿using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour {
+public class PlayerController : MonoBehaviour {
 
-    PlayerInputSystem controls;
-    Rigidbody2D rb;
-    Vector2 movement;
-    bool jump;
     public float speed;
     public float jumpPower;
     public float jumpTime;
     public bool onGround;
+    PlayerInputSystem controls;
+    Rigidbody2D rb;
+    Vector2 movement;
+    bool jump;
+    Vector2 startPos;
     void Awake () {
         controls = new PlayerInputSystem ();
 
@@ -21,12 +22,15 @@ public class PlayerMovement : MonoBehaviour {
     }
     void Start () {
         rb = GetComponent<Rigidbody2D> ();
+        startPos = transform.position;
     }
-
-    // Update is called once per frame
     void FixedUpdate () {
         Movement (movement);
         Jump ();
+    }
+    public void OutOfBounds () {
+        rb.velocity = Vector2.zero;
+        transform.position = startPos;
     }
     void Movement (Vector2 movement) {
         rb.AddForce (Vector2.right * speed * movement.x);
