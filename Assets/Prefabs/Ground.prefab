@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6824242358909480341}
-  - component: {fileID: 6824242358909480342}
-  - component: {fileID: 6824242358909480343}
+  - component: {fileID: 4724494598083284925}
+  - component: {fileID: 6166134023454781318}
   - component: {fileID: 6824242358909480328}
   m_Layer: 0
   m_Name: Ground
@@ -27,13 +27,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6824242358909480329}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.53, y: -4.48, z: 0}
+  m_LocalPosition: {x: -0.32064074, y: -1.7653564, z: -2.1485424}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &6824242358909480342
+--- !u!33 &4724494598083284925
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6824242358909480329}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &6824242358909480343
+--- !u!23 &6166134023454781318
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
