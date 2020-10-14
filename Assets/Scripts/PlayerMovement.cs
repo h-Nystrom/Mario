@@ -9,8 +9,6 @@ public class PlayerMovement : MonoBehaviour {
     public float speed;
     public float jumpPower;
     public float jumpTime;
-    public float jumpMaxTime;
-    public float maxGravity;
     public bool onGround;
     void Awake () {
         controls = new PlayerInputSystem ();
@@ -35,14 +33,13 @@ public class PlayerMovement : MonoBehaviour {
     }
     void Jump () {
         if (onGround) {
-            jumpTime = Time.time + jumpMaxTime;
+            jumpTime = Time.time + 0.25f;
         }
-
         if (Time.time < jumpTime && jump) {
             rb.AddForce (transform.up * jumpPower);
 
         } else if (!onGround) {
-            if (rb.gravityScale < maxGravity) { }
+            if (rb.gravityScale < 5) { }
             rb.gravityScale += 1.6f * Time.deltaTime;
         } else
             rb.gravityScale = 1.6f;

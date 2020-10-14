@@ -175,6 +175,17 @@ public class @PlayerInputSystem : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""cb58d43f-3a1c-427a-b80b-80c2bbe16163"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""8c5a5797-6e59-4b1f-bb9b-55a8ef7a4f8d"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
