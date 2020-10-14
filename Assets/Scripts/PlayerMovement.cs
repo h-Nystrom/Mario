@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour {
     public float jumpMaxTime;
     public float maxGravity;
     public bool onGround;
-
     void Awake () {
         controls = new PlayerInputSystem ();
 
@@ -32,24 +31,26 @@ public class PlayerMovement : MonoBehaviour {
         Jump ();
     }
     void Movement (Vector2 movement) {
-        rb.AddForce (transform.right * speed * movement.x);
+        rb.AddForce (Vector2.right * speed * movement.x);
     }
     void Jump () {
-        if (onGround == true) {
+        if (onGround) {
             jumpTime = Time.time + jumpMaxTime;
         }
 
-        if (Time.time < jumpTime && jump)
+        if (Time.time < jumpTime && jump) {
             rb.AddForce (transform.up * jumpPower);
-        else if (!onGround) {
+
+        } else if (!onGround) {
             if (rb.gravityScale < maxGravity) { }
-            rb.gravityScale += 1.4f * Time.deltaTime;
+            rb.gravityScale += 1.6f * Time.deltaTime;
         } else
-            rb.gravityScale = 1;
+            rb.gravityScale = 1.6f;
     }
     void OnCollisionStay2D (Collision2D col) {
-        if (col.transform.tag == "Ground") {
+        if (col.transform.tag == "Ground") { //Check location from between the player and colission at left of over etc.
             onGround = true;
+            //onWall = true;
         }
     }
     void OnCollisionExit2D (Collision2D col) {
