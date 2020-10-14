@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour {
         else
             CheckDistanceBeforeFollow ();
 
-        ResetPlayerOutOfBounds ();
+        KillPlayerIfOutOfBounds ();
     }
     void FollowTarget () {
         Vector3 targetPosition = Vector3.Lerp (transform.position, target.position + offset, smoothingSpeed * Time.deltaTime);
@@ -37,10 +37,9 @@ public class CameraController : MonoBehaviour {
         }
 
     }
-    void ResetPlayerOutOfBounds () {
+    void KillPlayerIfOutOfBounds () {
         if (target.position.y < bottomBoundary.position.y) {
-            //Call GM here
-            target.GetComponent<PlayerController> ().OutOfBounds ();
+            gameMaster.OnPlayerDeath ();
         }
     }
 }

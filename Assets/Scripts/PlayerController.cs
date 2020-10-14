@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour {
         Movement (movement);
         Jump ();
     }
-    public void OutOfBounds () {
+    public void ResetOnDeath () {
         rb.velocity = Vector2.zero;
         transform.position = startPos;
     }
