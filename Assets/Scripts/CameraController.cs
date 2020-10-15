@@ -8,7 +8,6 @@ public class CameraController : MonoBehaviour {
     public float smoothingSpeed;
     GameMaster gameMaster;
     bool follow;
-
     void Start () {
         gameMaster = GetComponent<GameMaster> ();
     }
@@ -39,7 +38,8 @@ public class CameraController : MonoBehaviour {
     }
     void KillPlayerIfOutOfBounds () {
         if (target.position.y < bottomBoundary.position.y) {
-            gameMaster.RemoveOneHealth ();
+            gameMaster.RemoveOneHealth ("Out of bounds!");
+            this.enabled = false;
         }
     }
 }

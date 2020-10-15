@@ -11,9 +11,11 @@ public class PlayerController : MonoBehaviour {
     Vector2 movement;
     bool jump;
     Vector2 startPos;
+    GameMaster gameMaster;
+    public bool deActivateController;
     void Awake () {
         controls = new PlayerInputSystem ();
-
+        gameMaster = Camera.main.GetComponent<GameMaster> ();
         controls.Input.Movement.performed += ctx => movement = ctx.ReadValue<Vector2> ();
         controls.Input.Movement.canceled += ctx => movement = Vector2.zero;
 
@@ -23,10 +25,19 @@ public class PlayerController : MonoBehaviour {
     void Start () {
         rb = GetComponent<Rigidbody2D> ();
         startPos = transform.position;
+        deActivateController = false;
+        rb.drag = 0.8f;
     }
     void FixedUpdate () {
-        Movement (movement);
-        Jump ();
+        if (deActivateController)
+            SlowDownOnDeath ();
+        else {
+            Movement (movement);
+            Jump ();
+        }
+    }
+    public void SlowDownOnDeath () {
+        rb.drag = 50f;
     }
     public void ResetOnDeath () {
         rb.velocity = Vector2.zero;
@@ -53,6 +64,11 @@ public class PlayerController : MonoBehaviour {
         if (col.transform.tag == "Ground") { //Check location from between the player and colission at left of over etc.
             onGround = true;
             //onWall = true;
+        }
+    }
+    void OnTriggerEnter2D (Collider2D col) {
+        if (col.gameObject.tag == "Trap" && !deActivateController) {
+            gameMaster.RemoveOneHealth ("Trap");
         }
     }
     void OnCollisionExit2D (Collision2D col) {
