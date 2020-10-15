@@ -55,7 +55,7 @@ public class GameMaster : MonoBehaviour {
     }
     public void GameOver () { //Takes string to show message//Save score to a playerprefs here!
         gameOverUI.SetActive (true);
-        deathMessageTxt.text = "You died of:" + deathMessage;
+        deathMessageTxt.text = "You died of: " + deathMessage;
     }
     public void ResetGame () {
         StaticGameSessionData.Lifes = 3;

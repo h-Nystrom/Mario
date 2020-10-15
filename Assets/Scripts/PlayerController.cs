@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour {
     public float jumpPower;
     public float jumpTime;
     public bool onGround;
+    float jumpDelayStartTime;
+    public bool canJump;
     PlayerInputSystem controls;
     Rigidbody2D rb;
     Vector2 movement;
@@ -47,26 +49,51 @@ public class PlayerController : MonoBehaviour {
         rb.AddForce (Vector2.right * speed * movement.x);
     }
     void Jump () {
-        if (onGround) {
+        canJump = JumpDeley ();
+        if (jump && onGround) {
+            jumpDelayStartTime = Time.time;
+        }
+        if (onGround && canJump) {
             jumpTime = Time.time + 0.25f;
         }
+
         if (Time.time < jumpTime && jump) {
             rb.AddForce (transform.up * jumpPower);
             rb.gravityScale = 1;
         } else if (!onGround) {
-            if (rb.gravityScale < 20) {
+            if (rb.gravityScale < 10) {
                 rb.gravityScale += 5f * Time.deltaTime;
             }
-        } else
+        } else {
             rb.gravityScale = 1.6f;
+        }
+    }
+    bool JumpDeley () {
+        if (Time.time - jumpDelayStartTime < 0.5f)
+            return false;
+        else
+            return true;
+    }
+    bool CollisionDirection (Vector3 col) {
+        Vector3 colPoint = col;
+        Vector3 dir = (transform.position - colPoint).normalized;
+        if (dir.y > 0.5f)
+            return true;
+        else if (dir.x > 0.1f) {
+            return true;
+        } else if (dir.x < -0.1f) {
+            return true;
+        } else
+            return false;
     }
     void OnCollisionStay2D (Collision2D col) {
         if (col.transform.tag == "Ground") { //Check location from between the player and colission at left of over etc.
-            onGround = true;
-            //onWall = true;
+            onGround = CollisionDirection (col.contacts[0].point);
         }
     }
+
     void OnCollisionEnter2D (Collision2D col) {
+
         if (!deActivateController) {
             if (col.gameObject.tag == "Trap") {
                 gameMaster.RemoveOneHealth ("Trap");
