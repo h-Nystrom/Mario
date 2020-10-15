@@ -71,6 +71,9 @@ public class PlayerController : MonoBehaviour {
             if (col.gameObject.tag == "Trap") {
                 gameMaster.RemoveOneHealth ("Trap");
             }
+            if (col.gameObject.tag == "Enemy") {
+                gameMaster.RemoveOneHealth ("Enemy");
+            }
         }
 
     }
