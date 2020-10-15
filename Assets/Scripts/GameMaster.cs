@@ -4,14 +4,19 @@ using UnityEngine.SceneManagement;
 
 public class GameMaster : MonoBehaviour {
 
-    public TMP_Text lifesTxt, coinsTxt, timeLeftTxt, levelTxt;
+    public TMP_Text lifesTxt, scoreTxt, timeLeftTxt, levelTxt;
     public GameObject victoryUI; //PauseUI;//GameOverUI
     public PlayerController playerController;
     public float maxTime;
     float currentTimeLeft, savedMaxTime;
-    int startingLifes = 3;
+    public int nextLevel;
+    int StartLifes; //Remove health to a new script located on the player named: Player health, this script only displayes the lifes and score;
     void Start () {
         savedMaxTime = maxTime;
+        lifesTxt.text = $"Lifes: {StaticGameSessionData.Lifes}";
+        scoreTxt.text = StaticGameSessionData.Score.ToString ();
+        StaticGameSessionData.CurrentLevel = nextLevel;
+        ResetCurrentTimeleft ();
     }
     void LateUpdate () {
         TimeLeft ();
@@ -20,41 +25,42 @@ public class GameMaster : MonoBehaviour {
         currentTimeLeft = Mathf.Clamp (maxTime - Time.time, 0, savedMaxTime);
         if (currentTimeLeft > 0) {
             timeLeftTxt.text = currentTimeLeft.ToString ($"00.0s");
-        } else if (!IsDead) {
-            OnPlayerDeath ();
+        } else {
+            RemoveOneHealth ();
         }
 
     }
     public void RemoveOneHealth () {
-        startingLifes -= 1;
-        lifesTxt.text = $"Lifes: {startingLifes}";
+
+        if (!StaticGameSessionData.PlayerIsDead) {
+            StaticGameSessionData.Lifes -= 1;
+            lifesTxt.text = $"Lifes: {StaticGameSessionData.Lifes}";
+            if (StaticGameSessionData.PlayerIsDead)
+                GameOver ();
+            else
+                RestartLevel (); //DeathUI
+        }
     }
-    bool IsDead { get => startingLifes == 0; }
     void ResetCurrentTimeleft () {
         maxTime = savedMaxTime + Time.time;
-    }
-    public void OnPlayerDeath () {
-        if (!IsDead)
-            RemoveOneHealth ();
-        if (IsDead) {
-            Time.timeScale = 0;
-        } else {
-            ResetCurrentTimeleft ();
-            playerController.ResetOnDeath ();
-        }
     }
     public void CompletedLevel () {
         victoryUI.SetActive (true);
     }
     public void GameOver () { //Takes string to show message
-
+        Debug.Log ("Game Over!");
+        StaticGameSessionData.Lifes = 3;
+        //Save score to a playerprefs here!
+        StaticGameSessionData.Score = 0;
+        StaticGameSessionData.CurrentLevel = 0;
+        NextLevel ();
     }
     public void RestartLevel () {
         SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
         Time.timeScale = 1;
     }
     public void NextLevel () {
-        SceneManager.LoadScene (0, LoadSceneMode.Single); //Change number to the right one!
+        SceneManager.LoadScene (StaticGameSessionData.CurrentLevel, LoadSceneMode.Single); //Change number to the right one!
         Time.timeScale = 1;
     }
     public void QuitGame () {

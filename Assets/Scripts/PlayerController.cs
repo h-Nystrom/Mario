@@ -41,10 +41,11 @@ public class PlayerController : MonoBehaviour {
         }
         if (Time.time < jumpTime && jump) {
             rb.AddForce (transform.up * jumpPower);
-
+            rb.gravityScale = 1;
         } else if (!onGround) {
-            if (rb.gravityScale < 5) { }
-            rb.gravityScale += 1.6f * Time.deltaTime;
+            if (rb.gravityScale < 20) {
+                rb.gravityScale += 5f * Time.deltaTime;
+            }
         } else
             rb.gravityScale = 1.6f;
     }
