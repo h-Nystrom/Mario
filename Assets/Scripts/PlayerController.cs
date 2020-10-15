@@ -66,10 +66,13 @@ public class PlayerController : MonoBehaviour {
             //onWall = true;
         }
     }
-    void OnTriggerEnter2D (Collider2D col) {
-        if (col.gameObject.tag == "Trap" && !deActivateController) {
-            gameMaster.RemoveOneHealth ("Trap");
+    void OnCollisionEnter2D (Collision2D col) {
+        if (!deActivateController) {
+            if (col.gameObject.tag == "Trap") {
+                gameMaster.RemoveOneHealth ("Trap");
+            }
         }
+
     }
     void OnCollisionExit2D (Collision2D col) {
         if (col.transform.tag == "Ground") {
