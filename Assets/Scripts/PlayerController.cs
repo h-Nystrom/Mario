@@ -3,15 +3,15 @@
 public class PlayerController : MonoBehaviour {
 
     public float speed;
-    public float jumpPower;
+    public float jumpPower, doubleJumpPower;
     public float jumpTime;
     public bool onGround;
     float jumpDelayStartTime;
-    public bool canJump;
     PlayerInputSystem controls;
     Rigidbody2D rb;
     Vector2 movement;
-    bool jump;
+    bool jumpInput;
+    public bool canDoubleJump, hasDoubleJumped;
     Vector2 startPos;
     GameMaster gameMaster;
     public bool deActivateController;
@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour {
         controls.Input.Movement.performed += ctx => movement = ctx.ReadValue<Vector2> ();
         controls.Input.Movement.canceled += ctx => movement = Vector2.zero;
 
-        controls.Input.Jump.performed += ctx => jump = true;
-        controls.Input.Jump.canceled += ctx => jump = false;
+        controls.Input.Jump.performed += ctx => jumpInput = true;
+        controls.Input.Jump.canceled += ctx => jumpInput = false;
     }
     void Start () {
         rb = GetComponent<Rigidbody2D> ();
@@ -49,30 +49,52 @@ public class PlayerController : MonoBehaviour {
         rb.AddForce (Vector2.right * speed * movement.x);
     }
     void Jump () {
-        canJump = JumpDeley ();
-        if (jump && onGround) {
-            jumpDelayStartTime = Time.time;
+        bool canJump = JumpDeley ();
+        if (onGround) {
+            canDoubleJump = false;
+            hasDoubleJumped = false;
+            if (jumpInput) {
+                jumpDelayStartTime = Time.time;
+            }
+            if (canJump) {
+                jumpTime = Time.time + 0.25f;
+            }
         }
-        if (onGround && canJump) {
-            jumpTime = Time.time + 0.25f;
+        if (canDoubleJump && !hasDoubleJumped && jumpInput) {
+            DoubleJump ();
         }
+        AddJumpForces (jumpTime);
+    }
+    void DoubleJump () {
+        jumpTime = Time.time + 0.25f;
+        hasDoubleJumped = true;
+        canDoubleJump = false;
+    }
+    bool JumpDeley () {
+        if (Time.time - jumpDelayStartTime < 0.25f)
+            return false;
+        else
+            return true;
+    }
 
-        if (Time.time < jumpTime && jump) {
-            rb.AddForce (transform.up * jumpPower);
-            rb.gravityScale = 1;
+    void AddJumpForces (float time) {
+        if (Time.time < time && jumpInput) {
+            rb.gravityScale = 1f;
+            if (rb.velocity.y > -2f)
+                rb.AddForce (transform.up * jumpPower, ForceMode2D.Impulse);
+            else
+                rb.AddForce (transform.up * doubleJumpPower * -rb.velocity.y, ForceMode2D.Impulse);
         } else if (!onGround) {
+            if (!jumpInput && !hasDoubleJumped) {
+                canDoubleJump = true;
+            }
+
             if (rb.gravityScale < 10) {
                 rb.gravityScale += 5f * Time.deltaTime;
             }
         } else {
             rb.gravityScale = 1.6f;
         }
-    }
-    bool JumpDeley () {
-        if (Time.time - jumpDelayStartTime < 0.5f)
-            return false;
-        else
-            return true;
     }
     bool CollisionDirection (Vector3 col) {
         Vector3 colPoint = col;
