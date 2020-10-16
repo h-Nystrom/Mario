@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 public class Flag : MonoBehaviour {
-    //public GameObject VictoryScreen;
     private GameMaster gameMaster;
     void Awake () {
         gameMaster = Camera.main.GetComponent<GameMaster> ();

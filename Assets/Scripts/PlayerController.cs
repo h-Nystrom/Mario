@@ -5,48 +5,49 @@ public class PlayerController : MonoBehaviour {
     public float speed;
     public float jumpPower, doubleJumpPower;
     public float jumpTime;
-    public bool onGround;
     float jumpDelayStartTime;
-    PlayerInputSystem controls;
-    Rigidbody2D rb;
-    Vector2 movement;
     bool jumpInput;
-    public bool canDoubleJump, hasDoubleJumped;
-    Vector2 startPos;
+    float movementInput;
+    bool onGround;
+    Rigidbody2D rb;
+    PlayerInputSystem controls;
     GameMaster gameMaster;
+
+    private bool canDoubleJump, hasDoubleJumped;
+    Vector2 startPos;
+
     public bool deActivateController;
     void Awake () {
         controls = new PlayerInputSystem ();
         gameMaster = Camera.main.GetComponent<GameMaster> ();
-        controls.Input.Movement.performed += ctx => movement = ctx.ReadValue<Vector2> ();
-        controls.Input.Movement.canceled += ctx => movement = Vector2.zero;
+
+        controls.Input.Movement.performed += ctx => movementInput = ctx.ReadValue<float> ();
+        controls.Input.Movement.canceled += ctx => movementInput = 0;
 
         controls.Input.Jump.performed += ctx => jumpInput = true;
         controls.Input.Jump.canceled += ctx => jumpInput = false;
+
+        controls.InputUI.Pause.performed += ctx => gameMaster.Pause ();
     }
     void Start () {
         rb = GetComponent<Rigidbody2D> ();
         startPos = transform.position;
         deActivateController = false;
-        rb.drag = 0.8f;
+        rb.drag = 1f;
     }
     void FixedUpdate () {
         if (deActivateController)
             SlowDownOnDeath ();
         else {
-            Movement (movement);
+            Movement (movementInput);
             Jump ();
         }
     }
     public void SlowDownOnDeath () {
-        rb.drag = 50f;
+        rb.drag = 40f;
     }
-    public void ResetOnDeath () {
-        rb.velocity = Vector2.zero;
-        transform.position = startPos;
-    }
-    void Movement (Vector2 movement) {
-        rb.AddForce (Vector2.right * speed * movement.x);
+    void Movement (float movement) {
+        rb.AddForce (Vector2.right * speed * movement);
     }
     void Jump () {
         bool canJump = JumpDeley ();
@@ -76,14 +77,13 @@ public class PlayerController : MonoBehaviour {
         else
             return true;
     }
-
     void AddJumpForces (float time) {
         if (Time.time < time && jumpInput) {
             rb.gravityScale = 1f;
-            if (rb.velocity.y > -2f)
-                rb.AddForce (transform.up * jumpPower, ForceMode2D.Impulse);
+            if (rb.velocity.y > -6f)
+                rb.AddForce (transform.up * jumpPower);
             else
-                rb.AddForce (transform.up * doubleJumpPower * -rb.velocity.y, ForceMode2D.Impulse);
+                rb.AddForce (transform.up * doubleJumpPower * -rb.velocity.y);
         } else if (!onGround) {
             if (!jumpInput && !hasDoubleJumped) {
                 canDoubleJump = true;
@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour {
             rb.gravityScale = 1.6f;
         }
     }
-    bool CollisionDirection (Vector3 col) {
+    bool DirectionOfCollision (Vector3 col) {
         Vector3 colPoint = col;
         Vector3 dir = (transform.position - colPoint).normalized;
         if (dir.y > 0.5f)
@@ -109,8 +109,8 @@ public class PlayerController : MonoBehaviour {
             return false;
     }
     void OnCollisionStay2D (Collision2D col) {
-        if (col.transform.tag == "Ground") { //Check location from between the player and colission at left of over etc.
-            onGround = CollisionDirection (col.contacts[0].point);
+        if (col.transform.tag == "Ground") {
+            onGround = DirectionOfCollision (col.contacts[0].point);
         }
     }
 
@@ -118,10 +118,10 @@ public class PlayerController : MonoBehaviour {
 
         if (!deActivateController) {
             if (col.gameObject.tag == "Trap") {
-                gameMaster.RemoveOneHealth ("Trap");
+                gameMaster.RemoveOneHealth ("Killed by a trap");
             }
             if (col.gameObject.tag == "Enemy") {
-                gameMaster.RemoveOneHealth ("Enemy");
+                gameMaster.RemoveOneHealth ("Killed by an enemy");
             }
         }
 

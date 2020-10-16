@@ -1,23 +1,37 @@
 ﻿using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-
 public class GameMaster : MonoBehaviour {
 
-    public TMP_Text lifesTxt, scoreTxt, timeLeftTxt, levelTxt, deathMessageTxt;
-    public GameObject victoryUI, gameOverUI; //PauseUI;//GameOverUI
+    [Tooltip ("Lifes, TimeLeft, Level, Death Message")]
+    public TMP_Text[] HudUI = new TMP_Text[4];
+    [Tooltip ("Pause, Victory, Game over")]
+    public GameObject[] screenUI = new GameObject[3];
+    [Tooltip ("Pause, Victory, Game over")]
+    public GameObject[] firstSelectedMenuButton = new GameObject[3];
     public PlayerController playerController;
-    string deathMessage;
-    public float maxTime;
-    float currentTimeLeft, savedMaxTime;
+    public float maxTime = 80f;
     public int nextLevel;
+    string deathMessage;
+    float currentTimeLeft, savedMaxTime;
     bool turnOffTimeLeft;
+    bool pause;
+    enum textUINumber {
+        Lifes,
+        TimeLeft,
+        Level,
+        DeathMessage
+    }
+    enum GameObjectUINumber {
+        Pause,
+        Victory,
+        GameOver
+    }
     void Start () {
         savedMaxTime = maxTime;
-        lifesTxt.text = $"Lifes: {StaticGameSessionData.Lifes}";
-        scoreTxt.text = StaticGameSessionData.Score.ToString ();
-        levelTxt.text = $"{StaticGameSessionData.CurrentLevel} : 1";
-        StaticGameSessionData.CurrentLevel = nextLevel;
+        HudUI[(int) textUINumber.Lifes].text = $"Lifes: {StaticGameSessionData.Lifes}";
+        HudUI[(int) textUINumber.Level].text = $"({StaticGameSessionData.CurrentLevel + 1}/5)";
         turnOffTimeLeft = false;
         ResetCurrentTimeleft ();
     }
@@ -29,19 +43,18 @@ public class GameMaster : MonoBehaviour {
             return;
         currentTimeLeft = Mathf.Clamp (maxTime - Time.time, 0, savedMaxTime);
         if (currentTimeLeft > 0) {
-            timeLeftTxt.text = currentTimeLeft.ToString ("00.0s");
+            HudUI[(int) textUINumber.TimeLeft].text = currentTimeLeft.ToString ("00.0s");
         } else {
-            RemoveOneHealth ("Time ran out!");
+            RemoveOneHealth ("You ran out of time!");
         }
-
     }
-    public void RemoveOneHealth (string deathMessage) { //String to know what killed the player.
+    public void RemoveOneHealth (string deathMessage) {
         this.deathMessage = deathMessage;
         playerController.deActivateController = true;
         turnOffTimeLeft = true;
         if (!StaticGameSessionData.PlayerIsDead) {
             StaticGameSessionData.Lifes -= 1;
-            lifesTxt.text = $"Lifes: {StaticGameSessionData.Lifes}";
+            HudUI[(int) textUINumber.Lifes].text = $"Lifes: {StaticGameSessionData.Lifes}";
             GameOver ();
         }
     }
@@ -51,17 +64,30 @@ public class GameMaster : MonoBehaviour {
     public void CompletedLevel () {
         playerController.deActivateController = true;
         turnOffTimeLeft = true;
-        victoryUI.SetActive (true);
+        screenUI[(int) GameObjectUINumber.Victory].SetActive (true);
+        NewSelectedButton (firstSelectedMenuButton[(int) GameObjectUINumber.Victory]);
     }
-    public void GameOver () { //Takes string to show message//Save score to a playerprefs here!
-        gameOverUI.SetActive (true);
-        deathMessageTxt.text = "You died of: " + deathMessage;
+    public void GameOver () {
+        screenUI[(int) GameObjectUINumber.GameOver].SetActive (true);
+        NewSelectedButton (firstSelectedMenuButton[(int) GameObjectUINumber.GameOver]);
+        HudUI[(int) textUINumber.DeathMessage].text = deathMessage;
     }
     public void ResetGame () {
+        Time.timeScale = 1;
         StaticGameSessionData.Lifes = 3;
-        StaticGameSessionData.Score = 0;
         StaticGameSessionData.CurrentLevel = 0;
-        NextLevel ();
+        SceneManager.LoadScene (StaticGameSessionData.CurrentLevel, LoadSceneMode.Single);
+    }
+    public void Pause () {
+        pause = !pause;
+        if (pause) {
+            Time.timeScale = 0;
+            screenUI[(int) GameObjectUINumber.Pause].SetActive (true);
+            NewSelectedButton (firstSelectedMenuButton[(int) GameObjectUINumber.Pause]);
+        } else {
+            Time.timeScale = 1;
+            screenUI[(int) GameObjectUINumber.Pause].SetActive (false);
+        }
     }
     public void RestartLevel () {
         if (!StaticGameSessionData.PlayerIsDead) {
@@ -71,7 +97,8 @@ public class GameMaster : MonoBehaviour {
 
     }
     public void NextLevel () {
-        SceneManager.LoadScene (StaticGameSessionData.CurrentLevel, LoadSceneMode.Single); //Change number to the right one!
+        StaticGameSessionData.CurrentLevel = nextLevel;
+        SceneManager.LoadScene (StaticGameSessionData.CurrentLevel, LoadSceneMode.Single);
     }
     public void QuitGame () {
 #if UNITY_EDITOR
@@ -80,5 +107,9 @@ public class GameMaster : MonoBehaviour {
         Application.Quit ();
 #endif
 
+    }
+    public void NewSelectedButton (GameObject selectedButton) {
+        EventSystem.current.SetSelectedGameObject (null);
+        EventSystem.current.SetSelectedGameObject (selectedButton);
     }
 }

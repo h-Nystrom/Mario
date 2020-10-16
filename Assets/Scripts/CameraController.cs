@@ -38,7 +38,7 @@ public class CameraController : MonoBehaviour {
     }
     void KillPlayerIfOutOfBounds () {
         if (target.position.y < bottomBoundary.position.y) {
-            gameMaster.RemoveOneHealth ("Out of bounds!");
+            gameMaster.RemoveOneHealth ("You fell to your death!");
             this.enabled = false;
         }
     }
