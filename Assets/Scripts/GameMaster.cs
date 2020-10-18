@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 public class GameMaster : MonoBehaviour {
 
-    [Tooltip ("Lifes, TimeLeft, Level, Death Message")]
-    public TMP_Text[] HudUI = new TMP_Text[4];
+    [Tooltip ("Lifes, TimeLeft, Death Message")]
+    public TMP_Text[] HudUI = new TMP_Text[3];
     [Tooltip ("Pause, Victory, Game over")]
     public GameObject[] screenUI = new GameObject[3];
     [Tooltip ("Pause, Victory, Game over")]
@@ -20,7 +20,6 @@ public class GameMaster : MonoBehaviour {
     enum textUINumber {
         Lifes,
         TimeLeft,
-        Level,
         DeathMessage
     }
     enum GameObjectUINumber {
@@ -31,7 +30,6 @@ public class GameMaster : MonoBehaviour {
     void Start () {
         savedMaxTime = maxTime;
         HudUI[(int) textUINumber.Lifes].text = $"Lifes: {StaticGameSessionData.Lifes}";
-        HudUI[(int) textUINumber.Level].text = $"({StaticGameSessionData.CurrentLevel + 1}/5)";
         turnOffTimeLeft = false;
         ResetCurrentTimeleft ();
     }
